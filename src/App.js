@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+//screens
+import Auth from "./screens/AuthScreen";
+import Chat from "./screens/ChatScreen";
+
+//action
+import { AutoLogin } from "./actions/users";
 
 function App() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(AutoLogin());
+  }, [dispatch]);
+
+  const { user } = useSelector((state) => state.Users);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/chat");
+    } else {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path="/" element={<Auth />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
     </div>
   );
 }
