@@ -1,47 +1,43 @@
 import React, { useEffect, useRef } from "react";
-import { MdLogout } from "react-icons/md";
-import { useDispatch } from "react-redux";
 import { ChatEngine } from "react-chat-engine";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import Nav from "../components/Nav";
+import { useDispatch, useSelector } from "react-redux";
+import { ChatEngineAuth } from "../actions/ChatEngine";
+import Loading from "../components/Loading";
 
 const ChatScreen = () => {
-  const dispatch = useDispatch();
   const didMount = useRef(false);
+  const [user, loading, error] = useAuthState(auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!didMount.current) {
+    if (!didMount.current && !loading) {
       didMount.current = true;
-      console.log("hello");
+      dispatch(ChatEngineAuth(user));
     }
-  }, []);
+  }, [loading]);
 
-  const LogoutHandler = () => {
-    dispatch({ type: "CLEAR_USER" });
-  };
+  const { chat_user, chat_loading } = useSelector((state) => state.ChatEngine);
+
+  if (loading || chat_loading) {
+    return <Loading />;
+  }
 
   return (
-    <div className="bg-slate-700 h-full  ">
-      <Nav LogoutHandler={LogoutHandler} />
-
-      <ChatEngine
-        projectID={process.env.REACT_APP_ID}
-        userName={"k4tg"}
-        userSecret={"1234"}
-        height="100vh"
-      />
+    <div className="bg-slate-700 h-full">
+      <Nav />
+      {chat_user && (
+        <ChatEngine
+          projectID={process.env.REACT_APP_ID}
+          userName={user.email}
+          userSecret={user.uid}
+          height="100vh"
+        />
+      )}
     </div>
   );
 };
-
-const Nav = ({ LogoutHandler }) => (
-  <nav className="bg-slate-900 text-slate-300 flex items-center justify-between py-5 px-10">
-    <h3 className="font-bold text-lg">CHATLAD</h3>
-    <button
-      className="bg-rose-700 py-3 px-6 rounded-full text-xl text-white hover:bg-rose-500 transition ease-in delay-150"
-      onClick={LogoutHandler}
-    >
-      <MdLogout />
-    </button>
-  </nav>
-);
 
 export default ChatScreen;

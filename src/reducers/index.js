@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
-import { Users } from "./Users";
+import { Error } from "./Error";
+import { ChatEngine } from "./ChatEngine";
 
 export default combineReducers({
-  Users,
+  Error,
+  ChatEngine,
 });
