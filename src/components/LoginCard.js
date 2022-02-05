@@ -7,7 +7,7 @@ const LoginCard = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="bg-slate-300 text-slate-900 py-3 px-4 rounded text-center w-2/3 lg:w-1/4  ">
+    <div className="bg-slate-300 text-slate-900 py-3 px-4 rounded text-center w-11/12 md:w-2/4 lg:w-1/4  ">
       <p className="text-xl font-semibold mb-12">Sign in!</p>
       <div className="flex flex-col text-lg px-4">
         <button

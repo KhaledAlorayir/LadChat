@@ -4,21 +4,15 @@ export const ChatEngineAuth = (user) => async (dispatch) => {
   try {
     dispatch({ type: "START_LOADING" });
 
-    if (!user.emailVerified) {
-      dispatch({
-        type: "SET_ERROR",
-        payload:
-          "the account you used to sign in doesn't have a verified email! ",
-      });
-      dispatch({ type: "STOP_LOADING" });
-      return;
-    }
+    const isTwitter = user.providerData[0].providerId === "twitter.com";
+    const username = isTwitter ? user.displayName : user.email;
+    const secret = user.uid;
 
     const res = await axios.put(
       "https://api.chatengine.io/users/",
       {
-        username: user.email,
-        secret: user.uid,
+        username,
+        secret,
       },
       {
         headers: { "PRIVATE-KEY": process.env.REACT_APP_PKEY },

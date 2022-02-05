@@ -31,7 +31,7 @@ const ChatScreen = () => {
       {chat_user && (
         <ChatEngine
           projectID={process.env.REACT_APP_ID}
-          userName={user.email}
+          userName={chat_user.username}
           userSecret={user.uid}
           height="100vh"
         />
